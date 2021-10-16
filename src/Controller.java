@@ -150,16 +150,27 @@ final class Controller {
     }
   }
 
+  private static final int internalPort = 3_1337 ;
+
   // All logging is done to System.err since output is redirected to System.out
   public static void main(String[] arguments) throws InterruptedException {
     validateArguments(arguments);
     var executor = Executors.newCachedThreadPool();
-    var controller = new Controller(3_1337, arguments[0], executor);
+    var binaryPath = arguments[0];
+    var controller = new Controller(internalPort, binaryPath, executor);
     runController(executor, controller);
-    int boxCount = arguments.length > 1 ? Integer.parseInt(arguments[1]) : 3;
-    startSomeBoxes(controller, boxCount);
+    startSomeBoxes(controller, readBoxCount(arguments));
     Thread.sleep(10_000);
-    executor.shutdown();
+    executor.shutdownNow();
+  }
+
+  private static final int boxCountIndex = 1;
+  private static final int defaultBoxCount = 3;
+
+  private static int readBoxCount(String[] arguments) {
+    return arguments.length > boxCountIndex
+      ? Integer.parseInt(arguments[boxCountIndex])
+      : defaultBoxCount;
   }
 
   private static void runController(Executor executor, Controller controller) {

@@ -2,8 +2,6 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.UUID;
 
@@ -59,10 +57,9 @@ final class Box {
     }
   }
 
-  public static void main(String[] arguments) throws IOException {
+  public static void main(String[] arguments) {
     validateArguments(arguments);
     var box = createBoxFromArguments(arguments);
-    Files.writeString(Path.of(box.id.toString() + ".box.txt"), box.id.toString());
     try {
       box.start();
     } catch (IOException failure) {
